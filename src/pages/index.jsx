@@ -36,7 +36,12 @@ export default function Home({
     if (query.trim()) {
       try {
         const results = await searchMovies(query);
-        setSearchResults(results);
+
+        if (results.results.length > 0) {
+          setSearchResults(results);
+        } else {
+          setSearchResults(null);
+        }
       } catch (error) {
         console.error("Error searching movies:", error);
         setSearchResults(null);
@@ -86,11 +91,17 @@ export default function Home({
         </div>
       ) : (
         <div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-            {searchResults.results.map((movie) => (
-              <MovieCard key={movie.id} movie={movie} />
-            ))}
-          </div>
+          {searchResults ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+              {searchResults?.results?.map((movie) => (
+                <MovieCard key={movie.id} movie={movie} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center text-2xl text-white">
+              No results found
+            </div>
+          )}
         </div>
       )}
     </div>
