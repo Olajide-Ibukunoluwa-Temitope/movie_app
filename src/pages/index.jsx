@@ -32,18 +32,6 @@ export default function Home({
       ? topRatedMoviesData
       : upcomingMoviesData;
 
-  // const debouncedSearch = (callback, delay) => {
-  //   let timeoutId;
-  //   return (...args) => {
-  //     if (timeoutId) {
-  //       clearTimeout(timeoutId);
-  //     }
-  //     timeoutId = setTimeout(() => {
-  //       callback(...args);
-  //     }, delay);
-  //   };
-  // };
-  console.log("searchResults", searchResults);
   const handleSearchDebounced = debouncedFunc(async (query) => {
     if (query.trim()) {
       try {
