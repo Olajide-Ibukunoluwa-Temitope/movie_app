@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import MovieCard from "../components/MovieCard";
 import {
@@ -10,25 +8,31 @@ import {
   searchMovies,
 } from "../services/api";
 import { debouncedFunc } from "@/helpers/debouncFunc";
+import ReactPaginate from "react-paginate";
+import { useRouter } from "next/router";
 
 export default function Home({
   popularMoviesData,
   nowPlayingMoviesData,
   topRatedMoviesData,
   upcomingMoviesData,
+  currentPage,
+  category,
 }) {
-  const [activeTab, setActiveTab] = useState("Popular");
+  // const [activeTab, setActiveTab] = useState("Popular");
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState(null);
-
+  // const [navigatedData, setNavigatedData] = useState([]);
   const tabs = ["Popular", "Now playing", "Top rated", "Upcoming"];
 
+  const router = useRouter();
+  const { query, pathname } = router;
   const data =
-    activeTab === "Popular"
+    category === "Popular"
       ? popularMoviesData
-      : activeTab === "Now playing"
+      : category === "Now playing"
       ? nowPlayingMoviesData
-      : activeTab === "Top rated"
+      : category === "Top rated"
       ? topRatedMoviesData
       : upcomingMoviesData;
 
@@ -60,9 +64,9 @@ export default function Home({
           onInput={(e) => handleSearchDebounced(e.target.value)}
           className="w-full h-12 py-1 px-4 rounded-full bg-white text-gray-800 focus:outline-none"
         />
-        <button className="absolute right-0 top-[9px] mr-3">
+        <span className="absolute right-0 top-[9px] mr-3">
           <i className="ri-search-2-line text-gray-500 text-lg"></i>
-        </button>
+        </span>
       </div>
 
       {!searchQuery ? (
@@ -72,11 +76,18 @@ export default function Home({
               <button
                 key={tab}
                 className={`px-4 py-2 cursor-pointer ${
-                  activeTab === tab
+                  category === tab
                     ? "bg-green-600 text-white"
                     : "bg-gray-800 text-gray-300"
                 } rounded-md mr-2`}
-                onClick={() => setActiveTab(tab)}
+                onClick={() => {
+                  const updatedQuery = { ...query, page: 1, category: tab };
+                  router.push({
+                    pathname,
+                    query: updatedQuery,
+                  });
+                  // setActiveTab(tab);
+                }}
               >
                 {tab}
               </button>
@@ -84,9 +95,36 @@ export default function Home({
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-            {data.results.map((movie) => (
+            {data?.results?.map((movie) => (
               <MovieCard key={movie.id} movie={movie} />
             ))}
+          </div>
+
+          <div className="mt-8">
+            <ReactPaginate
+              breakLabel="..."
+              nextLabel={<i className="ri-arrow-right-s-line"></i>}
+              onPageChange={(page) => {
+                const updatedQuery = { ...query, page: page.selected + 1 };
+
+                router.push({
+                  pathname,
+                  query: updatedQuery,
+                });
+              }}
+              pageRangeDisplayed={3}
+              pageCount={data.total_pages}
+              marginPagesDisplayed={2}
+              // initialPage={page}
+              forcePage={Number(currentPage) - 1}
+              previousLabel={<i className="ri-arrow-left-s-line"></i>}
+              renderOnZeroPageCount={null}
+              containerClassName="flex justify-center items-center space-x-2"
+              pageClassName="px-4 py-2 bg-gray-800 text-gray-300 rounded-md cursor-pointer"
+              activeClassName="bg-green-600 text-white"
+              previousClassName="px-4 py-2 bg-gray-800 text-gray-300 rounded-md cursor-pointer"
+              nextClassName="px-4 py-2 bg-gray-800 text-gray-300 rounded-md cursor-pointer"
+            />
           </div>
         </div>
       ) : (
@@ -108,12 +146,14 @@ export default function Home({
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
   try {
-    const popularData = await fetchPopularMovies(1);
-    const nowPlayingData = await fetchNowPlayingMovies(1);
-    const topRatedData = await fetchTopRatedMovies(1);
-    const upcomingData = await fetchUpcomingMovies(1);
+    const page = Number(context.query.page) || 1;
+    const category = context.query.category || "Popular";
+    const popularData = await fetchPopularMovies(page);
+    const nowPlayingData = await fetchNowPlayingMovies(page);
+    const topRatedData = await fetchTopRatedMovies(page);
+    const upcomingData = await fetchUpcomingMovies(page);
 
     return {
       props: {
@@ -121,6 +161,8 @@ export async function getServerSideProps() {
         nowPlayingMoviesData: nowPlayingData,
         topRatedMoviesData: topRatedData,
         upcomingMoviesData: upcomingData,
+        currentPage: page,
+        category: category,
       },
     };
   } catch (error) {
@@ -131,6 +173,8 @@ export async function getServerSideProps() {
         nowPlayingMovies: [],
         topRatedMovies: [],
         upcomingMovies: [],
+        category: "Popular",
+        currentPage: 1,
         error: "Failed to load movies",
       },
     };

@@ -3,23 +3,14 @@ import { useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import { fetchMovieDetails, fetchPopularMovies } from "@/services/api";
 import MovieCard from "@/components/MovieCard";
 import CastCard from "@/components/CastCard";
+import { useRouter } from "next/router";
 
 export default function MovieDetail({ movie }) {
-  const router = useRouter();
   const [showAllActors, setShowAllActors] = useState(false);
-
-  // If page is still loading
-  if (router.isFallback) {
-    return (
-      <div className="min-h-screen bg-black text-white flex justify-center items-center">
-        Loading...
-      </div>
-    );
-  }
+  const router = useRouter();
 
   return (
     <div className="min-h-[calc(100vh-144px)] bg-black text-white">
@@ -31,10 +22,13 @@ export default function MovieDetail({ movie }) {
         }}
       >
         <div className="container px-8 pt-8 mx-auto">
-          <Link href="/" className="flex items-center space-x-2">
+          <div
+            onClick={() => router.back()}
+            className="flex items-center space-x-2 cursor-pointer w-fit"
+          >
             <i className="ri-arrow-left-long-line text-2xl"></i>
             <span className="text-base">Back</span>
-          </Link>
+          </div>
         </div>
         <div className="container mx-auto flex p-8">
           <div className="w-1/4">
