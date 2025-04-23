@@ -18,7 +18,7 @@ export default function Navbar() {
 
         <div className="flex items-center space-x-4">
           {user && (
-            <Link href="/watchlist">
+            <Link href="/watchlist" data-testid="watchlist-link">
               <div className="flex items-center gap-2 px-4 py-2 group">
                 <i className="ri-bookmark-3-line text-xxl group-hover:text-yellow-500"></i>
                 <span className=" rounded cursor-pointer group-hover:text-yellow-500">
@@ -28,12 +28,12 @@ export default function Navbar() {
             </Link>
           )}
           {user ? (
-            <span
+            <button
               onClick={handleLogout}
               className="bg-red-600 px-4 py-1 rounded cursor-pointer hover:bg-red-700 transition duration-300"
             >
               SIGN OUT
-            </span>
+            </button>
           ) : (
             <Link href="/auth">
               <span className="bg-red-600 px-4 py-1 rounded cursor-pointer hover:bg-red-700 transition duration-300">

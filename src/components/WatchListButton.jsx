@@ -50,6 +50,7 @@ export default function WatchlistButton({ movie }) {
 
   return (
     <button
+      data-testid="watchlist-button"
       onClick={toggleWatchlist}
       className={` text-white py-2 px-4 rounded flex items-center mb-8 transition duration-300 space-x-2 cursor-pointer ${
         inWatchlist

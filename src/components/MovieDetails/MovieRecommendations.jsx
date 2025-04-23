@@ -1,4 +1,3 @@
-import { useState } from "react";
 import MovieCard from "../MovieCard";
 
 export default function MovieRecommendations({ movie }) {

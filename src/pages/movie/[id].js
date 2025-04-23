@@ -26,6 +26,7 @@ export default function MovieDetail({ movie }) {
           <div
             onClick={() => router.back()}
             className="flex items-center space-x-2 cursor-pointer w-fit"
+            data-testid="back-button"
           >
             <i className="ri-arrow-left-long-line text-2xl"></i>
             <span className="text-base">Back</span>
@@ -40,6 +41,7 @@ export default function MovieDetail({ movie }) {
                 width={500}
                 height={455}
                 className="object-cover"
+                id="movie-poster"
                 priority
               />
             </div>
@@ -48,7 +50,10 @@ export default function MovieDetail({ movie }) {
           <div className="w-3/4 pl-8">
             <div className="flex items-center justify-between">
               <h1 className="text-4xl font-bold mb-2">{movie.title}</h1>
-              <span className=" bg-black bg-opacity-70 px-2 py-1 rounded text-yellow-500 border border-yellow-500 font-bold text-sm">
+              <span
+                data-testid="movie-rating"
+                className=" bg-black bg-opacity-70 px-2 py-1 rounded text-yellow-500 border border-yellow-500 font-bold text-sm"
+              >
                 {movie.vote_average}
               </span>
             </div>
@@ -64,6 +69,7 @@ export default function MovieDetail({ movie }) {
                 {movie.genres.map((genre, index) => (
                   <span
                     key={genre.id}
+                    data-testid="genre-tag"
                     className="bg-yellow-500 text-black px-3 py-1 rounded-md"
                   >
                     {genre.name}
@@ -75,17 +81,23 @@ export default function MovieDetail({ movie }) {
             <div className="flex justify-between mb-4">
               <div className="flex items-center space-x-2">
                 <i className="ri-calendar-2-line text-2xl"></i>
-                <span>Release date: {movie.release_date}</span>
+                <span className="movie-release-date">
+                  Release date: {movie.release_date}
+                </span>
               </div>
 
               <div className="flex items-center space-x-2">
                 <i className="ri-time-line text-2xl"></i>
-                <span>Duration: {movie.runtime} minutes</span>
+                <span className="movie-runtime">
+                  Duration: {movie.runtime} minutes
+                </span>
               </div>
 
               <div className="flex items-center space-x-2">
                 <i className="ri-money-dollar-circle-line text-2xl"></i>
-                <span>Budget: {movie.budget.toLocaleString()}</span>
+                <span className="movie-budget">
+                  Budget: {movie.budget.toLocaleString()}
+                </span>
               </div>
             </div>
           </div>
@@ -127,7 +139,6 @@ export default function MovieDetail({ movie }) {
 
 export async function getStaticProps({ params }) {
   try {
-    console.log("params", params);
     const movieData = await fetchMovieDetails(params.id);
 
     if (!movieData) {

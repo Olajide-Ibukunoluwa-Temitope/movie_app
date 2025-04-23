@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 export default function Footer() {
   return (
     <footer className="py-6 px-4 border-t h-18 border-gray-800">

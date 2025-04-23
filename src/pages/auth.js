@@ -4,7 +4,7 @@ import Loader from "@/components/Loader";
 import { handleLogin, handleSignUp } from "@/services/auth";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 export default function Auth() {
   const [email, setEmail] = useState("");

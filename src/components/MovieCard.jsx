@@ -22,8 +22,8 @@ export default function MovieCard({ movie }) {
           </span>
         </div>
         <div className="p-4 flex flex-col flex-grow">
-          <h2 className="text-xl font-bold mb-2">{movie.title}</h2>
-          <div className="text-gray-400 text-sm flex-grow">
+          <h2 className="text-xl font-bold mb-2 movie-title">{movie.title}</h2>
+          <div className="text-gray-400 text-sm flex-grow movie-release-date">
             {movie.release_date}
           </div>
         </div>

@@ -19,10 +19,8 @@ export default function Home({
   currentPage,
   category,
 }) {
-  // const [activeTab, setActiveTab] = useState("Popular");
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState(null);
-  // const [navigatedData, setNavigatedData] = useState([]);
   const tabs = ["Popular", "Now playing", "Top rated", "Upcoming"];
 
   const router = useRouter();
@@ -86,7 +84,6 @@ export default function Home({
                     pathname,
                     query: updatedQuery,
                   });
-                  // setActiveTab(tab);
                 }}
               >
                 {tab}

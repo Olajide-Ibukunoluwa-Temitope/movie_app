@@ -5,7 +5,7 @@ export default function MovieCast({ movie }) {
   const [showAllActors, setShowAllActors] = useState(false);
 
   return (
-    <div className="container mx-auto mt-12 py-12">
+    <div className="container mx-auto mt-12 py-12 cast-member">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-3xl font-bold text-gray-300">ACTORS</h2>
         <label className="inline-flex items-center cursor-pointer">

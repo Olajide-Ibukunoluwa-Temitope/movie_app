@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import MovieCard from "../MovieCard";
 import { useAuth } from "@/context/AuthContext";
 import { addReview, getReviews } from "@/services/api";
 import { toast } from "react-toastify";
@@ -75,7 +74,10 @@ export default function MovieReviews({ movie }) {
       {reviews.length > 0 ? (
         <div className="max-h-[290px] overflow-y-auto">
           {reviews.slice(0, 10).map((review) => (
-            <div key={review.id} className="mb-6 border-b border-gray-700 pb-4">
+            <div
+              key={review.id}
+              className="mb-6 border-b border-gray-700 pb-4 review-item"
+            >
               <h4 className="font-semibold text-yellow-400">
                 {review.username}
               </h4>
@@ -87,7 +89,7 @@ export default function MovieReviews({ movie }) {
           ))}
         </div>
       ) : (
-        <h4 className="text-gray-400 text-3xl text-center my-10">
+        <h4 className="text-gray-400 text-3xl text-center my-10 no-reviews">
           No reviews yet.
         </h4>
       )}
