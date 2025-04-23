@@ -1,8 +1,12 @@
+import { useAuth } from "@/context/AuthContext";
+import { handleLogout } from "@/services/auth";
 import Link from "next/link";
 
 export default function Navbar() {
+  const { user } = useAuth();
+
   return (
-    <nav className="p-4 border-b border-gray-800 h-18">
+    <nav className="p-4 border-b border-gray-800 h-18 flex items-center">
       <div className="container mx-auto flex items-center justify-between">
         <div className="flex items-center">
           <Link href="/">
@@ -12,26 +16,31 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* <div className="relative w-96">
-          <input
-            type="text"
-            placeholder="Search by movie title"
-            className="w-full py-1 px-4 rounded-full bg-white text-gray-800 focus:outline-none"
-          />
-          <button className="absolute right-0 top-0 mt-1 mr-2">
-            <i className="ri-search-2-line text-gray-500"></i>
-          </button>
-        </div> */}
-
         <div className="flex items-center space-x-4">
-          <Link href="/watchlist">
-            <span className=" px-4 py-2 rounded cursor-pointer">Watchlist</span>
-          </Link>
-          <Link href="/auth">
-            <span className="bg-red-600 px-4 py-2 rounded cursor-pointer hover:bg-red-700 transition duration-300">
-              SIGN IN
+          {user && (
+            <Link href="/watchlist">
+              <div className="flex items-center gap-2 px-4 py-2 group">
+                <i className="ri-bookmark-3-line text-xxl group-hover:text-yellow-500"></i>
+                <span className=" rounded cursor-pointer group-hover:text-yellow-500">
+                  Watchlist
+                </span>
+              </div>
+            </Link>
+          )}
+          {user ? (
+            <span
+              onClick={handleLogout}
+              className="bg-red-600 px-4 py-1 rounded cursor-pointer hover:bg-red-700 transition duration-300"
+            >
+              SIGN OUT
             </span>
-          </Link>
+          ) : (
+            <Link href="/auth">
+              <span className="bg-red-600 px-4 py-1 rounded cursor-pointer hover:bg-red-700 transition duration-300">
+                SIGN IN
+              </span>
+            </Link>
+          )}
         </div>
       </div>
     </nav>

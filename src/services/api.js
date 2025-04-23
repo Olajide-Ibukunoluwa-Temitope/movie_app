@@ -1,11 +1,19 @@
-// services/api.js
+import { db } from "@/lib/firebase";
+import {
+  doc,
+  setDoc,
+  getDoc,
+  updateDoc,
+  deleteField,
+} from "firebase/firestore";
+
 const API_URL = process.env.NEXT_PUBLIC_MOVIE_API_URL;
 const API_KEY = process.env.NEXT_PUBLIC_MOVIE_API_KEY;
 
 export const fetchPopularMovies = async (page = 1) => {
   try {
     const response = await fetch(
-      `${API_URL}/movie/popular?api_key=${API_KEY}&language=en-US&page=${page}&append_to_response=genres`
+      `${API_URL}/movie/popular?api_key=${API_KEY}&language=en-US&page=${page}`
     );
     const data = await response.json();
     return data;
@@ -57,7 +65,7 @@ export const fetchUpcomingMovies = async (page = 1) => {
 export const fetchMovieDetails = async (movieId) => {
   try {
     const response = await fetch(
-      `${API_URL}/movie/${movieId}?api_key=${API_KEY}&language=en-US&append_to_response=credits,recommendations`
+      `${API_URL}/movie/${movieId}?api_key=${API_KEY}&language=en-US&append_to_response=credits,recommendations,reviews`
     );
     const data = await response.json();
     return data;
@@ -78,4 +86,41 @@ export const searchMovies = async (query) => {
     console.error("Error searching movies:", error);
     throw error;
   }
+};
+
+// firebase function calls
+export const addToWatchlist = async (userId, movie) => {
+  const ref = doc(db, "watchlists", userId);
+  const snap = await getDoc(ref);
+
+  const currentMovies = snap.exists() ? snap.data().movies || [] : [];
+
+  const alreadyExists = currentMovies?.some((m) => m.id === movie.id);
+  if (alreadyExists) return;
+
+  const updatedMovies = [
+    ...currentMovies,
+    { ...movie, createdAt: new Date().toISOString() },
+  ];
+
+  await setDoc(ref, { movies: updatedMovies });
+};
+
+export const removeFromWatchlist = async (userId, movieId) => {
+  const ref = doc(db, "watchlists", userId);
+  const snap = await getDoc(ref);
+
+  const currentMovies = snap.exists() ? snap.data().movies || [] : [];
+  const updatedMovies = currentMovies.filter((movie) => movie.id !== movieId);
+
+  await setDoc(ref, { movies: updatedMovies });
+};
+
+export const getWatchlist = async (userId) => {
+  const ref = doc(db, "watchlists", userId);
+  const snap = await getDoc(ref);
+
+  const movies = snap.exists() ? snap.data().movies || [] : [];
+
+  return movies.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 };

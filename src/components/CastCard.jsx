@@ -4,7 +4,7 @@ export default function CastCard({ actor }) {
   return (
     <div
       key={actor.id}
-      className="bg-gray-800 rounded-lg h-full overflow-hidden shadow-lg"
+      className="bg-gray-800 cast-card rounded-lg h-full overflow-hidden shadow-lg"
     >
       <div className="relative h-fit">
         <Image
@@ -17,6 +17,7 @@ export default function CastCard({ actor }) {
           width={192}
           height={286}
           className="object-cover"
+          priority
         />
       </div>
       <div className="p-3">

@@ -7,10 +7,13 @@ import { fetchMovieDetails, fetchPopularMovies } from "@/services/api";
 import MovieCard from "@/components/MovieCard";
 import CastCard from "@/components/CastCard";
 import { useRouter } from "next/router";
+import WatchlistButton from "@/components/WatchListButton";
 
 export default function MovieDetail({ movie }) {
   const [showAllActors, setShowAllActors] = useState(false);
   const router = useRouter();
+
+  console.log("movie", movie);
 
   return (
     <div className="min-h-[calc(100vh-144px)] bg-black text-white">
@@ -39,8 +42,7 @@ export default function MovieDetail({ movie }) {
                 width={500}
                 height={455}
                 className="object-cover"
-                placeholder="blur"
-                blurDataURL="/images/placeholder_img.png"
+                priority
               />
             </div>
           </div>
@@ -54,10 +56,11 @@ export default function MovieDetail({ movie }) {
             </div>
             <p className="text-lg text-gray-300 mb-6">{movie.tagline}</p>
 
-            <button className="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded flex items-center mb-8 transition duration-300 space-x-2 cursor-pointer">
+            {/* <button className="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded flex items-center mb-8 transition duration-300 space-x-2 cursor-pointer">
               <i className="ri-add-fill text-xl"></i>
               <span>Add to my Watchlist</span>
-            </button>
+            </button> */}
+            <WatchlistButton movie={movie} />
 
             <p className="text-lg mb-8">{movie.overview}</p>
 
@@ -121,7 +124,7 @@ export default function MovieDetail({ movie }) {
           </label>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+        <div className="cast-grid grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
           {movie.credits.cast
             .slice(0, showAllActors ? movie.credits.cast.length : 6)
             .map((actor) => (

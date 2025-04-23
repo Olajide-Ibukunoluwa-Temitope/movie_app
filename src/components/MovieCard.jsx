@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function MovieCard({ movie }) {
   return (
-    <Link href={`/movie/${movie.id}`}>
+    <Link className="movie-card" href={`/movie/${movie.id}`}>
       <div className="bg-gray-900 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer h-full flex flex-col">
         <div className="relative h-auto">
           <Image
@@ -15,6 +15,7 @@ export default function MovieCard({ movie }) {
             alt={movie.title}
             width={500}
             height={500}
+            priority
           />
           <span className="absolute top-2 right-2 bg-black bg-opacity-70 px-2 py-1 rounded text-yellow-500 border border-yellow-500 font-bold text-sm">
             {movie.vote_average}

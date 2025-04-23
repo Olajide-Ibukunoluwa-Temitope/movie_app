@@ -94,38 +94,55 @@ export default function Home({
             ))}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-            {data?.results?.map((movie) => (
-              <MovieCard key={movie.id} movie={movie} />
-            ))}
-          </div>
+          {data?.results?.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+              {data?.results?.map((movie) => (
+                <MovieCard key={movie.id} movie={movie} />
+              ))}
+            </div>
+          ) : (
+            <div className="flex justify-center items-center flex-col">
+              <div className="text-center text-2xl text-white mb-3">
+                Movies unavailable at this time
+              </div>
 
-          <div className="mt-8">
-            <ReactPaginate
-              breakLabel="..."
-              nextLabel={<i className="ri-arrow-right-s-line"></i>}
-              onPageChange={(page) => {
-                const updatedQuery = { ...query, page: page.selected + 1 };
+              <button
+                onClick={() => router.back()}
+                className="bg-yellow-500 text-black px-4 py-2 rounded-md cursor-pointer"
+              >
+                Go back
+              </button>
+            </div>
+          )}
 
-                router.push({
-                  pathname,
-                  query: updatedQuery,
-                });
-              }}
-              pageRangeDisplayed={3}
-              pageCount={data.total_pages}
-              marginPagesDisplayed={2}
-              // initialPage={page}
-              forcePage={Number(currentPage) - 1}
-              previousLabel={<i className="ri-arrow-left-s-line"></i>}
-              renderOnZeroPageCount={null}
-              containerClassName="flex justify-center items-center space-x-2"
-              pageClassName="px-4 py-2 bg-gray-800 text-gray-300 rounded-md cursor-pointer"
-              activeClassName="bg-green-600 text-white"
-              previousClassName="px-4 py-2 bg-gray-800 text-gray-300 rounded-md cursor-pointer"
-              nextClassName="px-4 py-2 bg-gray-800 text-gray-300 rounded-md cursor-pointer"
-            />
-          </div>
+          {data?.results?.length > 0 && (
+            <div className="mt-8">
+              <ReactPaginate
+                breakLabel="..."
+                nextLabel={<i className="ri-arrow-right-s-line"></i>}
+                onPageChange={(page) => {
+                  const updatedQuery = { ...query, page: page.selected + 1 };
+
+                  router.push({
+                    pathname,
+                    query: updatedQuery,
+                  });
+                }}
+                pageRangeDisplayed={3}
+                pageCount={data.total_pages}
+                marginPagesDisplayed={2}
+                // initialPage={page}
+                forcePage={Number(currentPage) - 1}
+                previousLabel={<i className="ri-arrow-left-s-line"></i>}
+                renderOnZeroPageCount={null}
+                containerClassName="flex justify-center items-center space-x-2"
+                pageClassName="px-4 py-2 bg-gray-800 text-gray-300 rounded-md cursor-pointer"
+                activeClassName="bg-green-600 text-white"
+                previousClassName="px-4 py-2 bg-gray-800 text-gray-300 rounded-md cursor-pointer"
+                nextClassName="px-4 py-2 bg-gray-800 text-gray-300 rounded-md cursor-pointer"
+              />
+            </div>
+          )}
         </div>
       ) : (
         <div>
