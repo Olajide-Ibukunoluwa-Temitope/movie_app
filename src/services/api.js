@@ -5,6 +5,13 @@ import {
   getDoc,
   updateDoc,
   deleteField,
+  serverTimestamp,
+  collection,
+  addDoc,
+  query,
+  orderBy,
+  getDocs,
+  limit,
 } from "firebase/firestore";
 
 const API_URL = process.env.NEXT_PUBLIC_MOVIE_API_URL;
@@ -65,7 +72,7 @@ export const fetchUpcomingMovies = async (page = 1) => {
 export const fetchMovieDetails = async (movieId) => {
   try {
     const response = await fetch(
-      `${API_URL}/movie/${movieId}?api_key=${API_KEY}&language=en-US&append_to_response=credits,recommendations,reviews`
+      `${API_URL}/movie/${movieId}?api_key=${API_KEY}&language=en-US&append_to_response=credits,recommendations`
     );
     const data = await response.json();
     return data;
@@ -123,4 +130,20 @@ export const getWatchlist = async (userId) => {
   const movies = snap.exists() ? snap.data().movies || [] : [];
 
   return movies.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+};
+
+export const addReview = async (movieId, review) => {
+  const ref = collection(db, "reviews", String(movieId), "userReviews");
+  await addDoc(ref, {
+    ...review,
+    createdAt: new Date().toISOString(),
+  });
+};
+
+export const getReviews = async (movieId) => {
+  const ref = collection(db, "reviews", String(movieId), "userReviews");
+  const q = query(ref, orderBy("createdAt", "desc"), limit(10));
+  const snapshot = await getDocs(q);
+
+  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 };

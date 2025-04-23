@@ -3,6 +3,7 @@ import "../styles/globals.css";
 import Navbar from "@/components/Layout/Navbar";
 import Footer from "@/components/Layout/Footer";
 import { AuthProvider } from "@/context/AuthContext";
+import { ToastContainer } from "react-toastify";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,6 +29,7 @@ export default function MyApp({ Component, pageProps }) {
 
         <Footer />
       </div>
+      <ToastContainer />
     </AuthProvider>
   );
 }

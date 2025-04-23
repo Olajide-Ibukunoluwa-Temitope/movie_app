@@ -163,7 +163,6 @@ export default function Auth() {
           )}
         </div>
       </div>
-      <ToastContainer />
     </div>
   );
 }

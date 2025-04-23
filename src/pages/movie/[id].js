@@ -1,19 +1,17 @@
-// pages/movie/[id].js
 import { useState } from "react";
-import Head from "next/head";
-import Link from "next/link";
 import Image from "next/image";
 import { fetchMovieDetails, fetchPopularMovies } from "@/services/api";
-import MovieCard from "@/components/MovieCard";
-import CastCard from "@/components/CastCard";
 import { useRouter } from "next/router";
 import WatchlistButton from "@/components/WatchListButton";
+import MovieReviews from "@/components/MovieDetails/MovieReviews";
+import MovieCast from "@/components/MovieDetails/MovieCast";
+import MovieRecommendations from "@/components/MovieDetails/MovieRecommendations";
 
 export default function MovieDetail({ movie }) {
-  const [showAllActors, setShowAllActors] = useState(false);
-  const router = useRouter();
+  const [activeTab, setActiveTab] = useState("actors");
 
-  console.log("movie", movie);
+  const tabs = ["Actors", "Recommendations", "Recent Reviews"];
+  const router = useRouter();
 
   return (
     <div className="min-h-[calc(100vh-144px)] bg-black text-white">
@@ -56,10 +54,6 @@ export default function MovieDetail({ movie }) {
             </div>
             <p className="text-lg text-gray-300 mb-6">{movie.tagline}</p>
 
-            {/* <button className="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded flex items-center mb-8 transition duration-300 space-x-2 cursor-pointer">
-              <i className="ri-add-fill text-xl"></i>
-              <span>Add to my Watchlist</span>
-            </button> */}
             <WatchlistButton movie={movie} />
 
             <p className="text-lg mb-8">{movie.overview}</p>
@@ -98,89 +92,38 @@ export default function MovieDetail({ movie }) {
         </div>
       </div>
 
-      <section className="container mx-auto mt-12 py-12">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-3xl font-bold text-gray-300">ACTORS</h2>
-          <label className="inline-flex items-center cursor-pointer">
-            <span className="mr-3 text-gray-300">Show all</span>
-            <div className="relative">
-              <input
-                type="checkbox"
-                className="sr-only"
-                checked={showAllActors}
-                onChange={() => setShowAllActors(!showAllActors)}
-              />
-              <div
-                className={`block w-10 h-6 rounded-full ${
-                  showAllActors ? "bg-green-600" : "bg-gray-600"
-                }`}
-              ></div>
-              <div
-                className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform ${
-                  showAllActors ? "transform translate-x-4" : ""
-                }`}
-              ></div>
-            </div>
-          </label>
+      <div>
+        <div className="container mx-auto mt-12">
+          <div className="border-b border-gray-700">
+            <nav className="flex gap-8">
+              {tabs.map((tab) => (
+                <button
+                  key={tab}
+                  className={`py-4 px-2 text-lg font-medium border-b-2 cursor-pointer ${
+                    activeTab === tab.toLowerCase()
+                      ? "border-yellow-500 text-yellow-500"
+                      : "border-transparent text-gray-400 hover:text-gray-300"
+                  }`}
+                  onClick={() => setActiveTab(tab.toLowerCase())}
+                >
+                  {tab}
+                </button>
+              ))}
+            </nav>
+          </div>
         </div>
+      </div>
 
-        <div className="cast-grid grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
-          {movie.credits.cast
-            .slice(0, showAllActors ? movie.credits.cast.length : 6)
-            .map((actor) => (
-              <CastCard key={actor.id} actor={actor} />
-            ))}
-        </div>
-      </section>
+      {activeTab === "actors" && <MovieCast movie={movie} />}
 
-      <section className="container mx-auto py-12">
-        <div className=" mb-6">
-          <h2 className="text-3xl font-bold text-gray-300 ">Recommendations</h2>
-        </div>
+      {activeTab === "recommendations" && (
+        <MovieRecommendations movie={movie} />
+      )}
 
-        <div className="grid grid-cols-2 md:grid-cols-4  gap-6">
-          {movie.recommendations.results.slice(0, 8).map((movie) => (
-            <MovieCard key={movie.id} movie={movie} />
-          ))}
-        </div>
-      </section>
+      {activeTab === "recent reviews" && <MovieReviews movie={movie} />}
     </div>
   );
 }
-
-// This would be replaced with actual data fetching in a real implementation
-// export async function getServerSideProps({ params }) {
-//   // In a real app, you'd fetch from an API here
-//   const movie = {
-//     id: params.id,
-//     title: "Moana 2",
-//     tagline: "The ocean is calling them back.",
-//     posterUrl: "/images/moana2-poster.jpg",
-//     backdropUrl: "/images/moana2-backdrop.jpg",
-//     rating: 7.1,
-//     overview:
-//       "After receiving an unexpected call from her wayfinding ancestors, Moana journeys alongside Maui and a new crew to the far seas of Oceania and into dangerous, long-lost waters for an adventure unlike anything she's ever faced.",
-//     genres: ["Animation", "Adventure", "Family", "Comedy"],
-//     releaseDate: "20.11.2024",
-//     duration: "1h 39m",
-//     budget: "$150,000,000",
-//     cast: [
-//       {
-//         name: "Auli'i Cravalho",
-//         profileUrl: "/images/actors/auli-cravalho.jpg",
-//       },
-//       {
-//         name: "Dwayne Johnson",
-//         profileUrl: "/images/actors/dwayne-johnson.jpg",
-//       },
-//       // Add more cast members as needed
-//     ],
-//   };
-
-//   return {
-//     props: { movie },
-//   };
-// }
 
 export async function getStaticProps({ params }) {
   try {
@@ -221,6 +164,6 @@ export async function getStaticPaths() {
 
   return {
     paths,
-    fallback: "blocking", // Generate remaining pages on-demand
+    fallback: "blocking",
   };
 }
