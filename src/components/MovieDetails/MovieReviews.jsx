@@ -60,54 +60,61 @@ export default function MovieReviews({ movie }) {
 
   if (isFetching)
     return (
-      <div className="flex justify-center items-center my-10">
-        <Loader size={5} />
+      <div className="flex justify-center items-center my-6 sm:my-8 md:my-10">
+        <Loader size={10} />
       </div>
     );
 
   return (
-    <div className="container mx-auto py-12">
-      <div className=" mb-6">
-        <h2 className="text-3xl font-bold text-gray-300 ">Reviews</h2>
+    <div className="container mx-auto py-6 sm:py-8 md:py-12 px-4 sm:px-6 md:px-8">
+      <div className="mb-4 sm:mb-6">
+        <h2 className="text-2xl sm:text-3xl font-bold text-gray-300">
+          Reviews
+        </h2>
       </div>
 
       {reviews.length > 0 ? (
-        <div className="max-h-[290px] overflow-y-auto">
+        <div className="max-h-[290px] overflow-y-auto pr-2 sm:pr-4">
           {reviews.slice(0, 10).map((review) => (
             <div
               key={review.id}
-              className="mb-6 border-b border-gray-700 pb-4 review-item"
+              className="mb-4 sm:mb-6 border-b border-gray-700 pb-3 sm:pb-4 review-item"
             >
-              <h4 className="font-semibold text-yellow-400">
+              <h4 className="font-semibold text-yellow-400 text-base sm:text-lg">
                 {review.username}
               </h4>
-              <p className="text-gray-300">{review.comment}</p>
-              <p className="text-xs text-gray-500 mt-2">
+              <p className="text-gray-300 text-sm sm:text-base">
+                {review.comment}
+              </p>
+              <p className="text-xs text-gray-500 mt-1 sm:mt-2">
                 {new Date(review.createdAt).toLocaleString()}
               </p>
             </div>
           ))}
         </div>
       ) : (
-        <h4 className="text-gray-400 text-3xl text-center my-10 no-reviews">
+        <h4 className="text-gray-400 text-xl sm:text-2xl md:text-3xl text-center my-6 sm:my-8 md:my-10 no-reviews">
           No reviews yet.
         </h4>
       )}
 
       {user?.uid && (
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-3 sm:space-y-4 mt-6 sm:mt-8"
+        >
           <textarea
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             placeholder="Write your review..."
-            className="w-full p-2 border border-yellow-500 rounded text-white placeholder:text-gray-400 outline-none"
-            rows={4}
+            className="w-full p-2 sm:p-3 border border-yellow-500 rounded text-white placeholder:text-gray-400 outline-none text-sm sm:text-base"
+            rows={3}
             required
           />
           <button
             type="submit"
             disabled={loading}
-            className="bg-yellow-500 hover:bg-yellow-600 px-4 py-2 rounded text-black disabled:opacity-50 cursor-pointer"
+            className="bg-yellow-500 hover:bg-yellow-600 px-3 sm:px-4 py-1.5 sm:py-2 rounded text-black disabled:opacity-50 cursor-pointer text-sm sm:text-base"
           >
             {loading ? "Submitting..." : "Submit Review"}
           </button>

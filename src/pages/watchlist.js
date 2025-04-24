@@ -25,35 +25,39 @@ export default function WatchList() {
 
     if (!loading) fetchWatchlist();
   }, [user, loading]);
-  console.log("movies", movies);
-  if (loading) return <p className="p-4">Loading...</p>;
+
+  if (loading) return <p className="p-4 text-center">Loading...</p>;
 
   if (!user)
     return (
-      <p className="p-4 text-center">Please sign in to view your watchlist.</p>
+      <p className="p-4 text-center text-base sm:text-lg text-gray-300">
+        Please sign in to view your watchlist.
+      </p>
     );
 
   if (isLoading)
     return (
-      <div className="flex justify-center items-center h-screen">
-        <Loader />
+      <div className="flex justify-center items-center min-h-[calc(100vh-144px)]">
+        <Loader size={10} />
       </div>
     );
 
   return (
-    <div className="min-h-[calc(100vh-144px)] bg-black text-white p-10">
-      <h1 className="text-3xl font-bold text-gray-300 text-center mb-8">
+    <div className="min-h-[calc(100vh-144px)] bg-black text-white p-4 sm:p-6 md:p-8 lg:p-10">
+      <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-300 text-center mb-4 sm:mb-6 md:mb-8">
         Watchlist
       </h1>
 
       {movies?.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
           {movies?.map((movie) => (
             <MovieCard key={movie.id} movie={movie} />
           ))}
         </div>
       ) : (
-        <p className="text-center text-gray-500">No movies in watchlist</p>
+        <p className="text-center text-gray-500 text-base sm:text-lg">
+          No movies in watchlist
+        </p>
       )}
     </div>
   );

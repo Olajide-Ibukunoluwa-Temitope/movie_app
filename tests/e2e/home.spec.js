@@ -3,9 +3,6 @@ import { test, expect } from "@playwright/test";
 test.describe("Home page", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("http://localhost:3000");
-
-    // Wait for initial content to load
-    await page.waitForSelector(".grid-cols-1");
   });
 
   test("search functionality works correctly", async ({ page }) => {
@@ -20,9 +17,7 @@ test.describe("Home page", () => {
 
     // Wait for search results using the correct class selector
     await expect(async () => {
-      const movieCards = page.locator(
-        ".grid-cols-1.sm\\:grid-cols-2 .movie-card"
-      );
+      const movieCards = page.locator(".movie-card");
       const count = await movieCards.count();
       expect(count).toBeGreaterThan(0);
     }).toPass({ timeout: 30000 });
@@ -47,8 +42,6 @@ test.describe("Home page", () => {
 
     // Click on "Now Playing" tab
     await page.click('button:text("Now Playing")');
-
-    // Wait for new movies to load
     await page.waitForTimeout(1000);
 
     // Verify different movies are displayed
@@ -56,7 +49,7 @@ test.describe("Home page", () => {
     const newCount = await newMovieCards.count();
     expect(newCount).toBeGreaterThan(0);
 
-    // Get first movie title from each category to verify they're different
+    // Get first movie title from current category to verify they're different
     const firstMovieTitle = await page
       .locator(".movie-card h2")
       .first()

@@ -136,7 +136,7 @@ export default function Auth() {
               className="w-full bg-red-600 text-white py-3 rounded font-medium hover:bg-red-700 transition duration-300 cursor-pointer flex items-center justify-center space-x-2"
             >
               <span>{isLogin ? "SIGN IN" : "CREATE ACCOUNT"}</span>
-              {loading && <Loader size={4} />}
+              {loading && <Loader size={3} />}
             </button>
           </form>
 

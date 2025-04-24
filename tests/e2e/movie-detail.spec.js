@@ -22,7 +22,7 @@ test.describe("Movie Detail page", () => {
       await page.waitForTimeout(500);
 
       if (tab === "Actors") {
-        await expect(page.locator(".cast-member")).toBeVisible();
+        await expect(page.locator(".cast-card").first()).toBeVisible();
       } else if (tab === "Recommendations") {
         await expect(page.locator(".movie-card").first()).toBeVisible();
       } else if (tab === "Recent Reviews") {

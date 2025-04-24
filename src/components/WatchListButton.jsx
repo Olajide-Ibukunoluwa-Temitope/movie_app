@@ -65,7 +65,7 @@ export default function WatchlistButton({ movie }) {
         <i className="ri-delete-bin-fill text-base"></i>
       )}
       <span>{inWatchlist ? "Remove from Watchlist" : "Add to Watchlist"}</span>
-      {isLoading && <Loader size={4} color="white" />}
+      {isLoading && <Loader size={3} color="white" />}
     </button>
   );
 }

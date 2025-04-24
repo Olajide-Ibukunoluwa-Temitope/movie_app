@@ -35,10 +35,12 @@ test.describe("Authentication and User Actions", () => {
 
     // Go to watchlist and verify movie is there
     await page.click('[data-testid="watchlist-link"]');
+    await page.waitForTimeout(500);
     await expect(page.locator(".movie-card")).toHaveCount(1);
 
     // go back to movie detail page
     await firstMovieCard.click();
+    await page.waitForTimeout(500);
 
     // Remove from watchlist
     const removeButton = page.locator(
@@ -48,6 +50,7 @@ test.describe("Authentication and User Actions", () => {
 
     // check if movie is removed
     await page.click('[data-testid="watchlist-link"]');
+    await page.waitForTimeout(500);
     await expect(page.locator(".movie-card")).toHaveCount(0);
   });
 

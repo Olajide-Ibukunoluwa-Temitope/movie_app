@@ -52,32 +52,32 @@ export default function Home({
   }, 800);
 
   return (
-    <div className="min-h-[calc(100vh-144px)] bg-black text-white p-10">
-      <div className="relative w-full mb-8">
+    <div className="min-h-[calc(100vh-144px)] bg-black text-white p-4 sm:p-6 md:p-8 lg:p-10">
+      <div className="relative w-full mb-4 sm:mb-6 md:mb-8">
         <input
           type="text"
           placeholder="Search by movie title"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           onInput={(e) => handleSearchDebounced(e.target.value)}
-          className="w-full h-12 py-1 px-4 rounded-full bg-white text-gray-800 focus:outline-none"
+          className="w-full h-10 sm:h-12 py-1 px-4 rounded-full bg-white text-gray-800 focus:outline-none text-sm sm:text-base"
         />
-        <span className="absolute right-0 top-[9px] mr-3">
-          <i className="ri-search-2-line text-gray-500 text-lg"></i>
+        <span className="absolute right-0 top-[7px] sm:top-[9px] mr-3">
+          <i className="ri-search-2-line text-gray-500 text-base sm:text-lg"></i>
         </span>
       </div>
 
       {!searchQuery ? (
         <div>
-          <div className="flex mb-8">
+          <div className="flex flex-wrap gap-2 mb-4 sm:mb-6 md:mb-8">
             {tabs.map((tab) => (
               <button
                 key={tab}
-                className={`px-4 py-2 cursor-pointer ${
+                className={`px-3 sm:px-4 py-1.5 sm:py-2 cursor-pointer text-sm sm:text-base ${
                   category === tab
                     ? "bg-green-600 text-white"
                     : "bg-gray-800 text-gray-300"
-                } rounded-md mr-2`}
+                } rounded-md`}
                 onClick={() => {
                   const updatedQuery = { ...query, page: 1, category: tab };
                   router.push({
@@ -92,20 +92,20 @@ export default function Home({
           </div>
 
           {data?.results?.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
               {data?.results?.map((movie) => (
                 <MovieCard key={movie.id} movie={movie} />
               ))}
             </div>
           ) : (
             <div className="flex justify-center items-center flex-col">
-              <div className="text-center text-2xl text-white mb-3">
+              <div className="text-center text-lg sm:text-xl md:text-2xl text-white mb-3">
                 Movies unavailable at this time
               </div>
 
               <button
                 onClick={() => router.back()}
-                className="bg-yellow-500 text-black px-4 py-2 rounded-md cursor-pointer"
+                className="bg-yellow-500 text-black px-3 sm:px-4 py-1.5 sm:py-2 rounded-md cursor-pointer text-sm sm:text-base"
               >
                 Go back
               </button>
@@ -113,7 +113,7 @@ export default function Home({
           )}
 
           {data?.results?.length > 0 && (
-            <div className="mt-8">
+            <div className="mt-6 sm:mt-8">
               <ReactPaginate
                 breakLabel="..."
                 nextLabel={<i className="ri-arrow-right-s-line"></i>}
@@ -125,18 +125,17 @@ export default function Home({
                     query: updatedQuery,
                   });
                 }}
-                pageRangeDisplayed={3}
+                pageRangeDisplayed={2}
                 pageCount={data.total_pages}
-                marginPagesDisplayed={2}
-                // initialPage={page}
+                marginPagesDisplayed={1}
                 forcePage={Number(currentPage) - 1}
                 previousLabel={<i className="ri-arrow-left-s-line"></i>}
                 renderOnZeroPageCount={null}
-                containerClassName="flex justify-center items-center space-x-2"
-                pageClassName="px-4 py-2 bg-gray-800 text-gray-300 rounded-md cursor-pointer"
+                containerClassName="flex flex-wrap justify-center items-center gap-1 sm:gap-2"
+                pageClassName="px-3 sm:px-4 py-1.5 sm:py-2 bg-gray-800 text-gray-300 rounded-md cursor-pointer text-sm sm:text-base"
                 activeClassName="bg-green-600 text-white"
-                previousClassName="px-4 py-2 bg-gray-800 text-gray-300 rounded-md cursor-pointer"
-                nextClassName="px-4 py-2 bg-gray-800 text-gray-300 rounded-md cursor-pointer"
+                previousClassName="px-3 sm:px-4 py-1.5 sm:py-2 bg-gray-800 text-gray-300 rounded-md cursor-pointer text-sm sm:text-base"
+                nextClassName="px-3 sm:px-4 py-1.5 sm:py-2 bg-gray-800 text-gray-300 rounded-md cursor-pointer text-sm sm:text-base"
               />
             </div>
           )}
@@ -144,13 +143,13 @@ export default function Home({
       ) : (
         <div>
           {searchResults ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
               {searchResults?.results?.map((movie) => (
                 <MovieCard key={movie.id} movie={movie} />
               ))}
             </div>
           ) : (
-            <div className="text-center text-2xl text-white">
+            <div className="text-center text-lg sm:text-xl md:text-2xl text-white">
               No results found
             </div>
           )}
