@@ -14,8 +14,8 @@ import {
   limit,
 } from "firebase/firestore";
 
-const API_URL = process.env.NEXT_PUBLIC_MOVIE_API_URL;
-const API_KEY = process.env.NEXT_PUBLIC_MOVIE_API_KEY;
+const API_URL = process.env.MOVIE_API_URL;
+const API_KEY = process.env.MOVIE_API_KEY;
 
 export const fetchPopularMovies = async (page = 1) => {
   try {

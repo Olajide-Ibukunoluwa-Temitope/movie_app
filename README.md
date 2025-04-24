@@ -42,7 +42,7 @@ A responsive Next js movie application that allows users to explore movies, view
 3. Create a `.env.local` file in the root directory and add your TMDB API key and base api url:
 
    ```
-   NEXT_PUBLIC_MOVIE_API_KEY=cabb51fd********69ba33a18fc9e2 (can be provided on request for the purpose of this assessment)
+   MOVIE_API_KEY=cabb51fd********69ba33a18fc9e2 (can be provided on request for the purpose of this assessment)
    NEXT_PUBLIC_MOVIE_API_URL=https://api.themoviedb.org/3
 
    ```
