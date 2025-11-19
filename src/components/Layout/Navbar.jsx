@@ -16,7 +16,16 @@ export default function Navbar() {
           </Link>
         </div>
 
+       
+
         <div className="flex items-center space-x-2 sm:space-x-4">
+           <div className="flex items-center">
+          <Link href="/mynextmovie">
+            <span className="text-base cursor-pointer hover:text-yellow-500">
+              Find my next movie
+            </span>
+          </Link>
+        </div>
           {user && (
             <Link href="/watchlist" data-testid="watchlist-link">
               <div className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1 sm:py-2 group">
