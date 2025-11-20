@@ -3,7 +3,7 @@ import CastCard from "../CastCard";
 
 export default function MovieCast({ movie }) {
   const [showAllActors, setShowAllActors] = useState(false);
-
+  // moviecast-card
   return (
     <div className="container mx-auto mt-6 sm:mt-8 md:mt-12 py-6 sm:py-8 md:py-12 px-4 sm:px-6 md:px-8">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 sm:gap-6 mb-4 sm:mb-6">
