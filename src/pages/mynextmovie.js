@@ -1,20 +1,34 @@
-import { useAuth } from "@/context/AuthContext";
-import { handleLogout } from "@/services/auth";
-import Image from "next/image";
-import Link from "next/link";
 import { useState } from "react";
+import MovieAutocomplete from "@/components/MovieAutocomplete";
+import RecommendationCard from "@/components/RecommendationCard";
 
 export default function MynextMovie() {
   // State management
   const [movie1, setMovie1] = useState("");
   const [movie2, setMovie2] = useState("");
+  // Full movie objects when picked from the autocomplete (for accurate matching)
+  const [selected1, setSelected1] = useState(null);
+  const [selected2, setSelected2] = useState(null);
   const [loading, setLoading] = useState(false);
   const [recommendations, setRecommendations] = useState(null);
   const [error, setError] = useState("");
 
-  // Function to get recommendations from Python backend
+  // Build the payload for one input: prefer the picked movie's id/year.
+  const buildPayload = (text, selected) => {
+    if (selected && selected.title === text) {
+      return {
+        id: selected.id,
+        title: selected.title,
+        year: selected.release_date
+          ? Number(selected.release_date.slice(0, 4))
+          : undefined,
+      };
+    }
+    return { title: text.trim() };
+  };
+
+  // Get AI-powered recommendations from our Next.js API route
   const getRecommendations = async () => {
-    // Validate input
     if (!movie1.trim() || !movie2.trim()) {
       setError("Please enter both movie titles");
       return;
@@ -25,24 +39,14 @@ export default function MynextMovie() {
     setRecommendations(null);
 
     try {
-      console.log("Sending request to backend...");
-      console.log("Movie 1:", movie1);
-      console.log("Movie 2:", movie2);
-
-      // Call Python backend
-      const response = await fetch(
-        "http://localhost:5000/api/recommendations",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            movie1: movie1.trim(),
-            movie2: movie2.trim(),
-          }),
-        }
-      );
+      const response = await fetch("/api/recommendations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          movie1: buildPayload(movie1, selected1),
+          movie2: buildPayload(movie2, selected2),
+        }),
+      });
 
       const data = await response.json();
 
@@ -52,22 +56,12 @@ export default function MynextMovie() {
         return;
       }
 
-      console.log("Success! Received recommendations:", data);
       setRecommendations(data);
     } catch (err) {
       console.error("Error:", err);
-      setError(
-        "Could not connect to the server. Make sure the Python backend is running on port 5000."
-      );
+      setError("Something went wrong while fetching recommendations. Please try again.");
     } finally {
       setLoading(false);
-    }
-  };
-
-  // Handle Enter key press
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter" && !loading) {
-      getRecommendations();
     }
   };
 
@@ -79,8 +73,8 @@ export default function MynextMovie() {
             Discover Your Next Favorite
           </h1>
           <p className="text-gray-400 w-[90%] text-base sm:text-lg mb-6">
-            Tell us a few movies or TV shows you love, and we'll recommend
-            similar titles you might enjoy.
+            Tell us a few movies you love, and we will compare them and
+            recommend similar titles you might enjoy.
           </p>
         </div>
 
@@ -88,32 +82,26 @@ export default function MynextMovie() {
           <p className="font-bold text-xl">Enter 2 Movies You Enjoy</p>
 
           {/* Movie Input 1 */}
-          <div className="flex-col flex w-full gap-2">
-            <p className="font-bold">Movie/TV Show #1</p>
-            <input
-              type="text"
-              placeholder="E.g. Inception"
-              value={movie1}
-              onChange={(e) => setMovie1(e.target.value)}
-              onKeyPress={handleKeyPress}
-              disabled={loading}
-              className="w-full h-10 sm:h-12 py-1 px-4 rounded-sm text-white outline-gray-400 outline-1 focus:outline-3 text-sm sm:text-base bg-gray-900 disabled:opacity-50"
-            />
-          </div>
+          <MovieAutocomplete
+            label="Movie #1"
+            placeholder="E.g. Inception"
+            value={movie1}
+            onChange={setMovie1}
+            onSelect={setSelected1}
+            onEnter={() => !loading && getRecommendations()}
+            disabled={loading}
+          />
 
           {/* Movie Input 2 */}
-          <div className="flex-col flex w-full gap-2">
-            <p className="font-bold">Movie/TV Show #2</p>
-            <input
-              type="text"
-              placeholder="E.g. Breaking Bad"
-              value={movie2}
-              onChange={(e) => setMovie2(e.target.value)}
-              onKeyPress={handleKeyPress}
-              disabled={loading}
-              className="w-full h-10 sm:h-12 py-1 px-4 rounded-sm text-white outline-gray-400 outline-1 focus:outline-3 text-sm sm:text-base bg-gray-900 disabled:opacity-50"
-            />
-          </div>
+          <MovieAutocomplete
+            label="Movie #2"
+            placeholder="E.g. The Matrix"
+            value={movie2}
+            onChange={setMovie2}
+            onSelect={setSelected2}
+            onEnter={() => !loading && getRecommendations()}
+            disabled={loading}
+          />
 
           {/* Get Recommendations Button */}
           <div className="flex w-full justify-end">
@@ -144,7 +132,7 @@ export default function MynextMovie() {
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     ></path>
                   </svg>
-                  Loading...
+                  Thinking...
                 </span>
               ) : (
                 "Get Recommendations"
@@ -166,7 +154,7 @@ export default function MynextMovie() {
           <div className="text-center py-12 mt-6">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500"></div>
             <p className="mt-4 text-gray-400">
-              Finding the perfect recommendations for you...
+              Comparing your movies and finding the perfect matches...
             </p>
           </div>
         )}
@@ -178,23 +166,29 @@ export default function MynextMovie() {
             <div className="bg-gray-900 p-6 rounded-lg">
               <h2 className="text-2xl font-bold mb-4">Based on your taste:</h2>
               <div className="flex gap-4 flex-wrap">
-                <div className="bg-gray-800 px-4 py-2 rounded">
-                  <span className="font-semibold">
-                    {recommendations.input_movies.movie1.title}
-                  </span>
-                  <span className="text-gray-400 text-sm ml-2">
-                    ({recommendations.input_movies.movie1.genres.join(", ")})
-                  </span>
-                </div>
-                <div className="bg-gray-800 px-4 py-2 rounded">
-                  <span className="font-semibold">
-                    {recommendations.input_movies.movie2.title}
-                  </span>
-                  <span className="text-gray-400 text-sm ml-2">
-                    ({recommendations.input_movies.movie2.genres.join(", ")})
-                  </span>
-                </div>
+                {[
+                  recommendations.input_movies.movie1,
+                  recommendations.input_movies.movie2,
+                ].map((m, i) => (
+                  <div key={i} className="bg-gray-800 px-4 py-2 rounded">
+                    <span className="font-semibold">{m.title}</span>
+                    {m.genres?.length > 0 && (
+                      <span className="text-gray-400 text-sm ml-2">
+                        ({m.genres.join(", ")})
+                      </span>
+                    )}
+                  </div>
+                ))}
               </div>
+
+              {recommendations.comparison && (
+                <p className="text-gray-300 mt-4 text-sm sm:text-base">
+                  <span className="text-yellow-500 font-semibold">
+                    Why these click:{" "}
+                  </span>
+                  {recommendations.comparison}
+                </p>
+              )}
             </div>
 
             {/* Recommendations List */}
@@ -212,67 +206,7 @@ export default function MynextMovie() {
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {recommendations.recommendations.map((movie) => (
-                    <div
-                      key={movie.id}
-                      className="bg-gray-900 rounded-lg overflow-hidden hover:ring-2 hover:ring-yellow-500 transition-all transform hover:scale-105"
-                    >
-                      <div className="flex gap-4">
-                        {/* Movie Poster */}
-                        {movie.poster_path ? (
-                          <Image
-                            src={movie.poster_path}
-                            alt={movie.title}
-                            className="w-32 h-48 object-cover flex-shrink-0"
-                            width={128}
-                            height={192}
-                            priority
-                          />
-                        ) : (
-                          <div className="w-32 h-48 bg-gray-800 flex items-center justify-center flex-shrink-0">
-                            <svg
-                              className="w-12 h-12 text-gray-600"
-                              fill="currentColor"
-                              viewBox="0 0 20 20"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                          </div>
-                        )}
-
-                        {/* Movie Info */}
-                        <div className="flex-1 p-4 min-w-0">
-                          <h3
-                            className="text-xl font-bold mb-2 truncate"
-                            title={movie.title}
-                          >
-                            {movie.title}
-                          </h3>
-                          <div className="flex items-center gap-2 mb-2 flex-wrap">
-                            <div className="flex items-center">
-                              <span className="text-yellow-500 mr-1">★</span>
-                              <span className="font-semibold">
-                                {movie.vote_average.toFixed(1)}
-                              </span>
-                            </div>
-                            {movie.release_date && (
-                              <span className="text-gray-400 text-sm">
-                                • {new Date(movie.release_date).getFullYear()}
-                              </span>
-                            )}
-                            <span className="text-gray-500 text-xs">
-                              Match: {movie.score}
-                            </span>
-                          </div>
-                          <p className="text-gray-400 text-sm line-clamp-3">
-                            {movie.overview}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
+                    <RecommendationCard key={movie.id} movie={movie} />
                   ))}
                 </div>
               )}
@@ -285,6 +219,8 @@ export default function MynextMovie() {
                   setRecommendations(null);
                   setMovie1("");
                   setMovie2("");
+                  setSelected1(null);
+                  setSelected2(null);
                   setError("");
                 }}
                 className="px-6 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors"

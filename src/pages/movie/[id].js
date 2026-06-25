@@ -6,6 +6,7 @@ import WatchlistButton from "@/components/WatchListButton";
 import MovieReviews from "@/components/MovieDetails/MovieReviews";
 import MovieCast from "@/components/MovieDetails/MovieCast";
 import MovieRecommendations from "@/components/MovieDetails/MovieRecommendations";
+import MovieTrailer from "@/components/MovieDetails/MovieTrailer";
 
 export default function MovieDetail({ movie }) {
   const [activeTab, setActiveTab] = useState("actors");
@@ -111,6 +112,8 @@ export default function MovieDetail({ movie }) {
           </div>
         </div>
       </div>
+
+      <MovieTrailer movie={movie} />
 
       <div>
         <div className="container mx-auto mt-8 sm:mt-12 px-4 sm:px-6 md:px-8">

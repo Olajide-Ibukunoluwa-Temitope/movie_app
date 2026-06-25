@@ -72,7 +72,7 @@ export const fetchUpcomingMovies = async (page = 1) => {
 export const fetchMovieDetails = async (movieId) => {
   try {
     const response = await fetch(
-      `${API_URL}/movie/${movieId}?api_key=${API_KEY}&language=en-US&append_to_response=credits,recommendations`
+      `${API_URL}/movie/${movieId}?api_key=${API_KEY}&language=en-US&append_to_response=credits,recommendations,videos`
     );
     const data = await response.json();
     return data;
@@ -84,9 +84,9 @@ export const fetchMovieDetails = async (movieId) => {
 
 export const searchMovies = async (query) => {
   try {
-    const response = await fetch(
-      `${API_URL}/search/movie?api_key=${API_KEY}&language=en-US&query=${query}`
-    );
+    // Goes through our own API route so the TMDB key stays server-side
+    // and the request works from the browser (env vars aren't exposed client-side).
+    const response = await fetch(`/api/search?query=${encodeURIComponent(query)}`);
     const data = await response.json();
     return data;
   } catch (error) {
